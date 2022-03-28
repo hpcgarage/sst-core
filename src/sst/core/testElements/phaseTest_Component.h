@@ -27,10 +27,10 @@ namespace PhaseTestComponent {
 // inheritance.  The definition of the ELI items are spread through 2
 // component base classes to make sure they get inherited in the
 // actual component that can be instanced.
-class coreTestComponentBase : public SST::Component
+class PhaseTestComponentBase : public SST::Component
 {
 public:
-    SST_ELI_REGISTER_COMPONENT_BASE(SST::CoreTestComponent::coreTestComponentBase)
+    SST_ELI_REGISTER_COMPONENT_BASE(SST::PhaseTestComponent::PhaseTestComponentBase)
 
     SST_ELI_DOCUMENT_PARAMS(
         { "workPerCycle", "Count of busy work to do during a clock tick.", NULL}
@@ -41,18 +41,18 @@ public:
     )
 
     SST_ELI_DOCUMENT_PORTS(
-        {"Nlink", "Link to the coreTestComponent to the North", { "coreTestComponent.coreTestComponentEvent", "" } }
+        {"Nlink", "Link to the PhaseTestComponent to the North", { "PhaseTestComponent.PhaseTestComponentEvent", "" } }
     )
 
-    coreTestComponentBase(ComponentId_t id) : SST::Component(id) {}
-    ~coreTestComponentBase() {}
+    PhaseTestComponentBase(ComponentId_t id) : SST::Component(id) {}
+    ~PhaseTestComponentBase() {}
 };
 
-class coreTestComponentBase2 : public coreTestComponentBase
+class PhaseTestComponentBase2 : public PhaseTestComponentBase
 {
 public:
     SST_ELI_REGISTER_COMPONENT_DERIVED_BASE(
-        SST::CoreTestComponent::coreTestComponentBase2, SST::CoreTestComponent::coreTestComponentBase)
+        SST::PhaseTestComponent::PhaseTestComponentBase2, SST::PhaseTestComponent::PhaseTestComponentBase)
 
     SST_ELI_DOCUMENT_PARAMS(
         { "commFreq",     "Approximate frequency of sending an event during a clock tick.", NULL},
@@ -63,21 +63,21 @@ public:
     )
 
     SST_ELI_DOCUMENT_PORTS(
-        {"Slink", "Link to the coreTestComponent to the South", { "coreTestComponent.coreTestComponentEvent", "" } }
+        {"Slink", "Link to the PhaseTestComponent to the South", { "PhaseTestComponent.PhaseTestComponentEvent", "" } }
     )
 
-    coreTestComponentBase2(ComponentId_t id) : coreTestComponentBase(id) {}
-    ~coreTestComponentBase2() {}
+    PhaseTestComponentBase2(ComponentId_t id) : PhaseTestComponentBase(id) {}
+    ~PhaseTestComponentBase2() {}
 };
 
-class coreTestComponent : public coreTestComponentBase2
+class PhaseTestComponent : public PhaseTestComponentBase2
 {
 public:
     // REGISTER THIS COMPONENT INTO THE ELEMENT LIBRARY
     SST_ELI_REGISTER_COMPONENT(
-        coreTestComponent,
+        PhaseTestComponent,
         "coreTestElement",
-        "coreTestComponent",
+        "PhaseTestComponent",
         SST_ELI_ELEMENT_VERSION(1,0,0),
         "CoreTest Test Component",
         COMPONENT_CATEGORY_PROCESSOR
@@ -93,24 +93,24 @@ public:
     )
 
     SST_ELI_DOCUMENT_PORTS(
-        {"Elink", "Link to the coreTestComponent to the East",  { "coreTestComponent.coreTestComponentEvent", "" } },
-        {"Wlink", "Link to the coreTestComponent to the West",  { "coreTestComponent.coreTestComponentEvent", "" } }
+        {"Elink", "Link to the PhaseTestComponent to the East",  { "PhaseTestComponent.PhaseTestComponentEvent", "" } },
+        {"Wlink", "Link to the PhaseTestComponent to the West",  { "PhaseTestComponent.PhaseTestComponentEvent", "" } }
     )
 
     // Optional since there is nothing to document
     SST_ELI_DOCUMENT_SUBCOMPONENT_SLOTS(
     )
 
-    coreTestComponent(SST::ComponentId_t id, SST::Params& params);
-    ~coreTestComponent();
+    PhaseTestComponent(SST::ComponentId_t id, SST::Params& params);
+    ~PhaseTestComponent();
 
     void setup() {}
     void finish() { printf("Component Finished.\n"); }
 
 private:
-    coreTestComponent();                         // for serialization only
-    coreTestComponent(const coreTestComponent&); // do not implement
-    void operator=(const coreTestComponent&);    // do not implement
+    PhaseTestComponent();                         // for serialization only
+    PhaseTestComponent(const PhaseTestComponent&); // do not implement
+    void operator=(const PhaseTestComponent&);    // do not implement
 
     void         handleEvent(SST::Event* ev);
     virtual bool clockTic(SST::Cycle_t);
@@ -131,7 +131,7 @@ private:
     SST::Statistics::Statistic<int>* countW;
 };
 
-} // namespace CoreTestComponent
+} // namespace PhaseTestComponent
 } // namespace SST
 
 #endif // SST_CORE_CORETEST_COMPONENT_H

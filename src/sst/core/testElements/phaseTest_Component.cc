@@ -27,7 +27,7 @@
 using namespace SST;
 using namespace SST::PhaseTestComponent;
 
-PhaseTestComponent::coreTestComponent(ComponentId_t id, Params& params) : coreTestComponentBase2(id)
+PhaseTestComponent::PhaseTestComponent(ComponentId_t id, Params& params) : PhaseTestComponentBase2(id)
 {
     bool found;
 
@@ -56,10 +56,10 @@ PhaseTestComponent::coreTestComponent(ComponentId_t id, Params& params) : coreTe
     primaryComponentDoNotEndSim();
 
     // configure out links
-    N = configureLink("Nlink", new Event::Handler<coreTestComponent>(this, &coreTestComponent::handleEvent));
-    S = configureLink("Slink", new Event::Handler<coreTestComponent>(this, &coreTestComponent::handleEvent));
-    E = configureLink("Elink", new Event::Handler<coreTestComponent>(this, &coreTestComponent::handleEvent));
-    W = configureLink("Wlink", new Event::Handler<coreTestComponent>(this, &coreTestComponent::handleEvent));
+    N = configureLink("Nlink", new Event::Handler<PhaseTestComponent>(this, &PhaseTestComponent::handleEvent));
+    S = configureLink("Slink", new Event::Handler<PhaseTestComponent>(this, &PhaseTestComponent::handleEvent));
+    E = configureLink("Elink", new Event::Handler<PhaseTestComponent>(this, &PhaseTestComponent::handleEvent));
+    W = configureLink("Wlink", new Event::Handler<PhaseTestComponent>(this, &PhaseTestComponent::handleEvent));
 
     countN = registerStatistic<int>("N");
     countS = registerStatistic<int>("S");
@@ -72,29 +72,29 @@ PhaseTestComponent::coreTestComponent(ComponentId_t id, Params& params) : coreTe
     assert(W);
 
     // set our clock
-    registerClock("1GHz", new Clock::Handler<coreTestComponent>(this, &coreTestComponent::clockTic));
+    registerClock("1GHz", new Clock::Handler<PhaseTestComponent>(this, &PhaseTestComponent::clockTic));
 }
 
-coreTestComponent::~coreTestComponent()
+PhaseTestComponent::~PhaseTestComponent()
 {
     delete rng;
 }
 
-coreTestComponent::coreTestComponent() : coreTestComponentBase2(-1)
+PhaseTestComponent::PhaseTestComponent() : PhaseTestComponentBase2(-1)
 {
     // for serialization only
 }
 
 // incoming events are scanned and deleted
 void
-coreTestComponent::handleEvent(Event* ev)
+PhaseTestComponent::handleEvent(Event* ev)
 {
     // printf("recv\n");
-    coreTestComponentEvent* event = dynamic_cast<coreTestComponentEvent*>(ev);
+    PhaseTestComponentEvent* event = dynamic_cast<PhaseTestComponentEvent*>(ev);
     if ( event ) {
         // scan through each element in the payload and do something to it
         volatile int sum = 0;
-        for ( coreTestComponentEvent::dataVec::iterator i = event->payload.begin(); i != event->payload.end(); ++i ) {
+        for ( PhaseTestComponentEvent::dataVec::iterator i = event->payload.begin(); i != event->payload.end(); ++i ) {
             sum += *i;
         }
         delete event;
@@ -107,7 +107,7 @@ coreTestComponent::handleEvent(Event* ev)
 // each clock tick we do 'workPerCycle' iterations of a coreTest loop.
 // We have a 1/commFreq chance of sending an event of size commSize to
 // one of our neighbors.
-bool coreTestComponent::clockTic(Cycle_t)
+bool PhaseTestComponent::clockTic(Cycle_t)
 {
     // do work
     // loop becomes:
@@ -130,7 +130,7 @@ bool coreTestComponent::clockTic(Cycle_t)
     if ( (rng->generateNextInt32() % commFreq) == 0 ) {
         // yes, communicate
         // create event
-        coreTestComponentEvent* e = new coreTestComponentEvent();
+        PhaseTestComponentEvent* e = new PhaseTestComponentEvent();
         // fill payload with commSize bytes
         for ( int i = 0; i < (commSize); ++i ) {
             e->payload.push_back(1);
